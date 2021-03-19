@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <script>
+      let apiKey = "5fb66c418d8127b122d45f8c06c2006b";
+      // fetch("https://randomuser.me/api/?results=10")
+      //   .then((data) => data.json())
+      //   .then((data) => console.log(data));
+
+      getUsers();
+
+      async function getUsers(quantity = 1) {
+        let url = `https://randomuser.me/api/?results=${quantity}&noinfo`;
+        let personData = await fetch(url)
+          .then((d) => d.json())
+          .then((d) => d.results);
+
+        console.log(personData);
+        let firstPerson = (fp = personData[0]);
+
+        console.log(firstPerson);
+
+        let OWAURL = generateOpenWeatherApiUrl(
+          fp.location.city,
+          fp.location.state,
+          fp.nat
+        );
+        console.log(OWAURL);
+        let weatherData = await fetch(OWAURL)
+          .then((d) => d.json())
+          .then((d) => d);
+        console.log(weatherData);
+      }
+
+      function generateOpenWeatherApiUrl(city, state, country) {
+        console.log(city, state, country);
+        return `http://api.openweathermap.org/data/2.5/weather?q=${city},${state},${country}&appid=${apiKey}`;
+      }
+
+      function onlyEnglishCharacters(s) {
+        let scrubbedString = s.replace(/[^\x00-\x7F]/g, "");
+        console.log(s, scrubbedString);
+        return s.length === scrubbedString;
+      }
+    </script>
+  </body>
+</html>
